@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var urlEndPoint = 'http://localhost:8080/notifications/subscribe/5';
+            var eventSource = new EventSource(urlEndPoint)
+
+            eventSource.addEventListener("notification", function(event){
+                console.log(event)
+            })
+
+        })
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
