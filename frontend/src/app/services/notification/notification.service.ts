@@ -13,7 +13,7 @@ export class NotificationService {
   subscribe(userId: string): Observable<any> {
     return new Observable<SseResponse>((observer) => {
       this.eventSource = new EventSource(
-        `http://localhost:8080/notifications/subscribe/${userId}`
+        `http://localhost:8050/api/v1/notifications/subscribe/${userId}`
       );
       this.eventSource.onmessage = (event) => {
         this.zone.run(() => {

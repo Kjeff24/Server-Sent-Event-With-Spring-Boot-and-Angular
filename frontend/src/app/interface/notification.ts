@@ -4,5 +4,13 @@ export interface SseResponse {
 
 export interface SseData {
     event: string;
-    message: string | Object
+    message: string | Notification
+}
+
+export interface Notification {
+    id: number;
+    title: string;
+    message: string;
+    read: boolean;
+    date: Date;
 }

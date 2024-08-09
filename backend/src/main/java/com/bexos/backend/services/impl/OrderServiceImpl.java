@@ -1,5 +1,6 @@
 package com.bexos.backend.services.impl;
 
+import com.bexos.backend.dto.NotificationResponse;
 import com.bexos.backend.entitites.Notification;
 import com.bexos.backend.entitites.Order;
 import com.bexos.backend.entitites.Product;
@@ -13,6 +14,9 @@ import com.bexos.backend.services.NotificationService;
 import com.bexos.backend.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +32,25 @@ public class OrderServiceImpl implements OrderService {
         Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException("Product not found"));
 
         orderRepository.save(Order.builder().user(user).product(product).build());
-        Notification notification = notificationRepository.save(Notification.builder().title("Order was successful")
-                .message("Your order has been placed, you would be notify during transit").build());
+        notificationRepository.save(Notification.builder()
+                .event("notification")
+                .title("Order was successful")
+                .message("Your order has been placed, you would be notify during transit")
+                .user(user)
+                .build());
 
-        notificationService.notifyUser(String.valueOf(user.getId()), notification);
+        List<NotificationResponse> notifications = notificationRepository.findByUserAndIsReadFalseOrderByCreatedAtDesc(user).stream()
+                .map(NotificationResponse::new)
+                .toList();;
+
+
+//        NotificationResponse notificationResponse = new NotificationResponse(notification);
+
+        notificationService.notifyUser(String.valueOf(user.getId()), notifications);
 
 
         return product;
     }
+
+
 }
