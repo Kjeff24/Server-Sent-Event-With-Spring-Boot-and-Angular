@@ -8,7 +8,7 @@ import { EventSourceController, EventSourcePlus } from 'event-source-plus';
 })
 export class NotificationService {
   constructor(private zone: NgZone) {}
-  token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTcyNDA4NDI4MiwiZXhwIjoxNzI0MDg1NzIyfQ.ghtXWBJS7E_QwCquCh-zFwsFc-eiuJ00LjTypSXyjC8"
+  token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTcyNDA4NjMwMCwiZXhwIjoxNzI0MTcyNzAwfQ.hxEsQTqrM26l7rG9RF-LRLUBOpsPp_NbwZZNysei0JU"
 
   subscribe(): Observable<SseData> {
     return new Observable<SseData>((observer) => {
