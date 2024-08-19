@@ -3,7 +3,6 @@ package com.bexos.backend.controllers;
 import com.bexos.backend.dto.NotificationResponse;
 import com.bexos.backend.services.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,25 +15,23 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/notifications")
+@RequestMapping("/notification")
 public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @GetMapping(value = "/subscribe/{userId}", consumes = MediaType.ALL_VALUE)
-    public SseEmitter subscribe(@PathVariable Integer userId) {
-        return notificationService.subscribe(userId);
+    @GetMapping(value = "/subscribe", consumes = MediaType.ALL_VALUE)
+    public SseEmitter subscribe() {
+        return notificationService.subscribe();
     }
 
     @PostMapping("/notify/{userId}")
-    public void notifyUser(@PathVariable String userId, @RequestBody String message) {
-        System.out.println("Message " + message);
+    public void notifyUser(@PathVariable Integer userId, @RequestBody String message) {
         notificationService.notifyUser(userId, message);
     }
 
     @PostMapping("/notify")
     public void notifyAllUsers(@RequestBody String message) {
-        System.out.println("Message " + message);
         notificationService.notifyAllUsers(message);
     }
 

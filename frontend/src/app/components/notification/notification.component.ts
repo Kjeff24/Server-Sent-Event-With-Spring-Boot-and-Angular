@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { NotificationService } from '../../services/notification/notification.service';
 import { SseData } from '../../interface/notification';
@@ -8,11 +8,12 @@ import { SseData } from '../../interface/notification';
   standalone: true,
   imports: [],
   templateUrl: './notification.component.html',
-  styleUrl: './notification.component.css',
+  styleUrls: ['./notification.component.css'], // Corrected to styleUrls
 })
-export class NotificationComponent {
+export class NotificationComponent implements OnInit, OnDestroy {
   messages: string[] = [];
   userId!: string;
+  private controller: any; // Store the controller for unsubscribing
 
   constructor(
     private location: Location,
@@ -20,28 +21,26 @@ export class NotificationComponent {
   ) {}
 
   ngOnInit(): void {
-    const urlSegments = this.location.path().split('/');
-    this.userId = urlSegments[urlSegments.length - 1];
-    if (this.userId) {
-      console.log(this.userId)
-      this.getNotification();
-    }
+    this.getNotification();
   }
 
   ngOnDestroy(): void {
-    this.notificationService.unsubscribe();
+    if (this.controller) {
+      this.controller.abort();
+    }
   }
 
-  getNotification() {
-    this.notificationService.subscribe(this.userId).subscribe({
+  getNotification(): void {
+    this.controller = this.notificationService.subscribe().subscribe({
       next: (data: SseData) => {
-        console.log(data)
-        console.log('Message received: ' + data.event);
-        if(typeof data.message === 'string') {
-          console.log('Message received: ' + data.message);
-        } else {
+        console.log('Message received: ', data);
+
+        if (typeof data.message === 'string') {
+          console.log('Message: ' + data.message);
+          this.messages.push(data.message);
+        } else if (data.message && typeof data.message === 'object') {
           console.log('Title: ' + data.message.title);
-          console.log('Title: ' + data.message.message);
+          console.log('Message: ' + data.message.message);
         }
       },
       error: (error) => {
@@ -49,8 +48,7 @@ export class NotificationComponent {
       },
       complete: () => {
         console.log('Notification stream closed');
-      }
-    })
+      },
+    });
   }
-  
 }

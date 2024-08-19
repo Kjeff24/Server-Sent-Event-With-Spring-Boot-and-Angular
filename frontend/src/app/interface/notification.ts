@@ -12,5 +12,5 @@ export interface Notification {
     title: string;
     message: string;
     read: boolean;
-    date: Date;
+    timeAgo: string;
 }
